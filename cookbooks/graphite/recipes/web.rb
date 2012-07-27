@@ -21,11 +21,11 @@ remote_file "/usr/src/graphite-web-#{node.graphite.graphite_web.version}/webapp/
   checksum "8bf57821"
 end
 
-execute "patch graphite-web" do
-  command "patch storage.py storage.py.patch"
-  creates "/opt/graphite/webapp/graphite_web-#{node.graphite.graphite_web.version}-py2.6.egg-info"
-  cwd "/usr/src/graphite-web-#{node.graphite.graphite_web.version}/webapp/graphite"
-end
+#execute "patch graphite-web" do
+#  command "patch storage.py storage.py.patch"
+#  creates "/opt/graphite/webapp/graphite_web-#{node.graphite.graphite_web.version}-py2.6.egg-info"
+#  cwd "/usr/src/graphite-web-#{node.graphite.graphite_web.version}/webapp/graphite"
+#end
 
 execute "install graphite-web" do
   command "python setup.py install"

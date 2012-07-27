@@ -1,7 +1,13 @@
+### Etsy recommended settings
+# 6 hours of 10 second data (what we consider "near-realtime")
+# 1 week of 1 minute data
+# 5 years of 10 minute data
+
 [stats]
 priority = 100
 pattern = ^stats\..*
 retentions = 10:2160,60:10080,600:262974
+#retentions = 10s:6h,1min:7d,10min:5y # Not supported by this old version of Graphite
 
 [catchall]
 priority = 0

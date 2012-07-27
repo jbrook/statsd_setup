@@ -26,6 +26,8 @@ end
 
 template "/opt/graphite/conf/storage-schemas.conf"
 
+template "/opt/graphite/conf/storage-aggregation.conf"
+
 service "carbon-cache" do
   running true
   start_command "/opt/graphite/bin/carbon-cache.py start"

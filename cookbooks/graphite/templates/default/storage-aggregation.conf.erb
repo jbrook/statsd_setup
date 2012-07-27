@@ -1,0 +1,29 @@
+# For databases with 'min' or 'max' in the name, keep only the minimum and 
+# maximum value when rolling up data and store a None if less than 10% of 
+# the datapoints were received
+
+[min]
+pattern = \.min$
+xFilesFactor = 0.1 
+aggregationMethod = min 
+
+[max]
+pattern = \.max$
+xFilesFactor = 0.1 
+aggregationMethod = max 
+
+# For databases with 'count' in the name, add all the values together, and 
+# store only a None if none of the datapoints were received
+
+[sum]
+pattern = \.count$
+xFilesFactor = 0 
+aggregationMethod = sum 
+
+# For all other databases, average the values (mean) when rolling up data,
+# and store a None if less than 30% of the datapoints were received
+
+[default_average]
+pattern = .*
+xFilesFactor = 0.3 
+aggregationMethod = average
