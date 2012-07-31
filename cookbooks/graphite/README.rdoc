@@ -8,6 +8,8 @@ Ubuntu 10.04 (Lucid)
 
 = ATTRIBUTES:
 
+* `node[:graphite][:graphite_web][:timezone]` - Default dashboard timezone.
+
 = USAGE:
 
 recipe[graphite] should build a stand-alone Graphite installation.

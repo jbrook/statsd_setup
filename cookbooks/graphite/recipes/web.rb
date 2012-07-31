@@ -16,6 +16,7 @@ execute "untar graphite-web" do
   cwd "/usr/src"
 end
 
+
 remote_file "/usr/src/graphite-web-#{node.graphite.graphite_web.version}/webapp/graphite/storage.py.patch" do
   source "http://launchpadlibrarian.net/65094495/storage.py.patch"
   checksum "8bf57821"
@@ -31,6 +32,15 @@ execute "install graphite-web" do
   command "python setup.py install"
   creates "/opt/graphite/webapp/graphite_web-#{node.graphite.graphite_web.version}-py2.6.egg-info"
   cwd "/usr/src/graphite-web-#{node.graphite.graphite_web.version}"
+end
+
+template "/opt/graphite/webapp/graphite/local_settings.py" do
+  mode "0644"
+  source "local_settings.py.erb"
+  variables(
+    :timezone => node[:graphite][:graphite_web][:timezone]
+  )
+  notifies :restart, resources(:service => "apache2")
 end
 
 template "/etc/apache2/sites-available/graphite" do
