@@ -1,0 +1,12 @@
+description "Carbon"
+author "Chef"
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+respawn
+expect daemon
+
+exec start-stop-daemon --start --oknodo --chdir /opt/graphite --user <%= @user %> --chuid <%= @user %> --pidfile /opt/graphite/storage/carbon-cache-a.pid --name carbon-cache --startas /opt/graphite/bin/carbon-cache.py -- start
+
+emits carbon-cache-running

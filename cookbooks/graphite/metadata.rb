@@ -5,7 +5,11 @@ description      "Installs/Configures graphite"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.0.5"
 
-depends  "python"
-depends  "apache2"
-depends  "ganglia"
-supports "ubuntu"
+%w{ apache2 graphite logrotate python }.each do |d|
+  depends d
+end
+
+%w{ ubuntu }.each do |os|
+    supports os
+end
+

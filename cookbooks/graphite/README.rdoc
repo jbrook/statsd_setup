@@ -8,7 +8,7 @@ Ubuntu 10.04 (Lucid)
 
 = ATTRIBUTES:
 
-* `node[:graphite][:graphite_web][:timezone]` - Default dashboard timezone.
+* `node[:graphite][:dashboard][:timezone]` - Default dashboard timezone.
 
 = USAGE:
 

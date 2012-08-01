@@ -1,36 +1,58 @@
-package "python-twisted"
-
-remote_file "/usr/src/carbon-#{node.graphite.carbon.version}.tar.gz" do
-  source node.graphite.carbon.uri
-  checksum node.graphite.carbon.checksum
-end
-
-execute "untar carbon" do
-  command "tar xzf carbon-#{node.graphite.carbon.version}.tar.gz"
-  creates "/usr/src/carbon-#{node.graphite.carbon.version}"
-  cwd "/usr/src"
-end
-
-execute "install carbon" do
-  command "python setup.py install"
-  creates "/opt/graphite/lib/carbon-#{node.graphite.carbon.version}-py2.6.egg-info"
-  cwd "/usr/src/carbon-#{node.graphite.carbon.version}"
+python_pip "carbon" do
+  version node["graphite"]["version"]
+  action :install
 end
 
 template "/opt/graphite/conf/carbon.conf" do
-  variables( :line_receiver_interface => node[:graphite][:carbon][:line_receiver_interface],
-             :pickle_receiver_interface => node[:graphite][:carbon][:pickle_receiver_interface],
-             :cache_query_interface => node[:graphite][:carbon][:cache_query_interface] )
+  mode "0644"
+  source "carbon.conf.erb"
+  owner node["apache"]["user"]
+  group node["apache"]["group"]
+  variables(
+    :line_receiver_interface    => node["graphite"]["carbon"]["line_receiver_interface"],
+    :pickle_receiver_interface  => node["graphite"]["carbon"]["pickle_receiver_interface"],
+    :cache_query_interface      => node["graphite"]["carbon"]["cache_query_interface"]
+  )
   notifies :restart, "service[carbon-cache]"
 end
 
-template "/opt/graphite/conf/storage-schemas.conf"
+template "/opt/graphite/conf/storage-schemas.conf" do
+  mode "0644"
+  source "storage-schemas.conf.erb"
+  owner node["apache"]["user"]
+  group node["apache"]["group"]
+end
 
-template "/opt/graphite/conf/storage-aggregation.conf"
+template "/opt/graphite/conf/storage-aggregation.conf" do
+  mode "0644"
+  source "storage-aggregation.conf.erb"
+  owner node["apache"]["user"]
+  group node["apache"]["group"]
+end
+
+execute "chown" do
+  command "chown -R #{node["apache"]["user"]}:#{node["apache"]["group"]} /opt/graphite/storage"
+  only_if do
+    f = File.stat("/opt/graphite/storage")
+    f.uid == 0 && f.gid == 0
+  end
+end
+
+template "/etc/init/carbon-cache.conf" do
+  mode "0644"
+  source "carbon-cache.conf.erb"
+  variables(:user => node["apache"]["user"])
+end
+
+logrotate_app "carbon" do
+  cookbook "logrotate"
+  path "/opt/graphite/storage/log/carbon-cache-a/*.log"
+  frequency "daily"
+  rotate 7
+  create "644 root root"
+end
 
 service "carbon-cache" do
-  running true
-  start_command "/opt/graphite/bin/carbon-cache.py start"
-  stop_command "/opt/graphite/bin/carbon-cache.py stop"
-  action :start
+  provider Chef::Provider::Service::Upstart
+  action [ :enable, :start ]
 end
