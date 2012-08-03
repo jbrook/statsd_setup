@@ -20,10 +20,15 @@ pattern = \.count$
 xFilesFactor = 0 
 aggregationMethod = sum 
 
+[stats_counts]
+pattern = ^stats_counts\..*
+xFilesFactor = 0
+aggregationMethod = sum
+
 # For all other databases, average the values (mean) when rolling up data,
-# and store a None if less than 30% of the datapoints were received
+# Don't ignore any data no matter how infrequent
 
 [default_average]
 pattern = .*
-xFilesFactor = 0.3 
+xFilesFactor = 0 
 aggregationMethod = average

@@ -57,12 +57,8 @@ end
 execute "syncdb" do
   cwd "/opt/graphite/webapp/graphite"
   command "python manage.py syncdb --noinput"
-end
-
-file "/opt/graphite/storage/graphite.db" do
-  owner node["apache"]["user"]
+  user node["apache"]["user"]
   group node["apache"]["group"]
-  mode "0644"
 end
 
 logrotate_app "dashboard" do

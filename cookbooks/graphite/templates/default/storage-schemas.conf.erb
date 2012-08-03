@@ -6,8 +6,11 @@
 [stats]
 priority = 100
 pattern = ^stats\..*
-#retentions = 10:2160,60:10080,600:262974
-retentions = 10s:6h,1min:7d,10min:5y # Not supported by this old version of Graphite
+retentions = 10s:6h,1min:7d,10min:5y
+
+[stats_counts]
+pattern = ^stats_counts\..*
+retentions = 10s:6h,1min:7d,10min:5y
 
 [catchall]
 priority = 0
